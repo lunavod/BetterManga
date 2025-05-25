@@ -5,6 +5,12 @@
   "description": "Enhances the MangaNato reading experience with additional features.",
   "version": "1.0",
 
+  "icons": {
+    "16": "icon.png",
+    "48": "icon.png",
+    "128": "icon.png"
+  },
+
   "content_scripts": [
       {
           "matches": ["https://www.natomanga.com/*", "https://manganato.com/*"],
