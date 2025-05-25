@@ -1,8 +1,8 @@
 {
   "manifest_version": 3,
 
-  "name": "MangaNato Enhancer",
-  "description": "Enhances the MangaNato reading experience with additional features.",
+  "name": "NatoManga Enhancer",
+  "description": "Enhances the NatoManga reading experience with additional features.",
   "version": "1.0",
 
   "icons": {
@@ -13,7 +13,7 @@
 
   "content_scripts": [
       {
-          "matches": ["https://www.natomanga.com/*", "https://manganato.com/*"],
+          "matches": ["https://www.natomanga.com/*"],
           "js": ["js/vendor.js", "js/content_script.js"],
           "css": ["content-styles.css"]
       }
@@ -24,6 +24,6 @@
   ],
 
   "host_permissions": [
-    "https://www.natomanga.com/*", "https://manganato.com/*"
+    "https://www.natomanga.com/*"
   ]
 }
