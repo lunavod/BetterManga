@@ -1,0 +1,147 @@
+@media (min-width: 1200px) {
+    .container {
+        max-width: 1260px;
+    }
+}
+
+.leftCol {
+    width: calc(100% - 390px);
+}
+
+.middleCol {
+    width: 380px;
+}
+
+.sts {
+    font-size: 16px;
+    text-transform: none;
+}
+
+/* .itemupdate ul li h3 {
+    max-width: 100%;
+}
+
+.itemupdate ul li h3 a {
+    font-size: 16px;
+    text-transform: none;
+}
+
+.itemupdate i {
+    font-size: 12px;
+}
+
+.cover img {
+    width: 101px;
+    height: 141px;
+}
+
+.itemupdate ul{
+    height: 100%;
+}
+
+.itemupdate ul li:nth-child(1) {
+    margin-bottom: 12px;
+} */
+
+.banner-cus {
+    display: none;
+}
+
+.info-top-chapter-text {
+    display: none;
+}
+
+.info-top-chapter h2 {
+    display: none;
+}
+
+.current-chapter{
+    display: none;
+}
+
+.new_update_trangdoc{
+    display: none;
+}
+
+.manga-info-content p {
+    display: none;
+}
+
+.comments p, .comments h2 {
+    display: none;
+}
+
+.container-chapter-reader {
+    margin-bottom: 32px !important;
+}
+
+.container-chapter-reader + div {
+    display: none;
+}
+
+.btn-navigation-chap .original {
+    margin-left: 16px;
+}
+
+.manga-card {
+    position: absolute;
+    left: 10px;
+    top: 10px;
+    background: white;
+    color: #003555;
+    width: 400px;
+    height: auto;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    padding: 12px;
+    gap: 12px;
+    border: 1px solid #ff5c19;
+    box-shadow: 1px 2px 10px rgba(0, 0, 0, .2);
+}
+
+body.dark .manga-card {
+    background: #3e3e3e!important;
+    color: #e0e0e0;
+    border: 2px solid #2a524a;
+    box-shadow: 1px 2px 10px rgba(0, 0, 0, .3);
+}
+
+.manga-card .left-col, .manga-card .right-col {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.manga-card .cover {
+    width: 120px;
+    height: auto;
+}
+
+.manga-card .title {
+    color: black;
+    padding: 0;
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+    line-height: 1.2;
+    position: relative;
+}
+
+.manga-card .description {
+    font-size: 14px;
+    margin: 0;
+    max-height: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 10;
+    -webkit-box-orient: vertical;
+}
+
+.notification-header {
+    display: none !important;
+}
+
+.notification-header.important {
+    display: block !important;
+}
