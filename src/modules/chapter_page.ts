@@ -14,7 +14,7 @@ export class ChapterPage extends Module {
         const chapterSelect = document.querySelector(".navi-change-chapter") as HTMLSelectElement;
         
         if (!chapterSelect || buttons.length === 0) {
-            console.warn("Required elements not found");
+            console.log("Required elements not found");
             return;
         }
 
@@ -27,7 +27,7 @@ export class ChapterPage extends Module {
             : fullChapterName.replace("Chapter ", "");
 
         if (chapterNum.includes("-") || chapterNum.includes(".")) {
-            console.warn("Current chapter is half chapter, skipping");
+            console.log("Current chapter is half chapter, skipping");
             return;
         }
 
