@@ -1,70 +1,10 @@
-# Chrome Extension TypeScript Starter
+# NatoManga Enhancer extension
 
-![build](https://github.com/chibat/chrome-extension-typescript-starter/workflows/build/badge.svg)
+An extension for [NatoManga](https://natomanga.com) that enhances the reading experience by adding useful features and removing unnecessary clutter.
 
-Chrome Extension, TypeScript and Visual Studio Code
+## Features
 
-## Prerequisites
-
-* [node + npm](https://nodejs.org/) (Current Version)
-
-## Option
-
-* [Visual Studio Code](https://code.visualstudio.com/)
-
-## Includes the following
-
-* TypeScript
-* Webpack
-* React
-* Jest
-* Example Code
-    * Chrome Storage
-    * Options Version 2
-    * content script
-    * count up badge number
-    * background
-
-## Project Structure
-
-* src/typescript: TypeScript source files
-* src/assets: static files
-* dist: Chrome Extension directory
-* dist/js: Generated JavaScript files
-
-## Setup
-
-```
-npm install
-```
-
-## Import as Visual Studio Code project
-
-...
-
-## Build
-
-```
-npm run build
-```
-
-## Build in watch mode
-
-### terminal
-
-```
-npm run watch
-```
-
-### Visual Studio Code
-
-Run watch mode.
-
-type `Ctrl + Shift + B`
-
-## Load extension to chrome
-
-Load `dist` directory
-
-## Test
-`npx jest` or `npm run test`
+- **Next Full Chapter**: Skip the annoying sliced 42.1, 42.2 and 42.3 and go straight to 43 if available.
+- **Manga Preview Popup**: Brings back the preview popup that was removed after the move.
+- **Less clutter**: Who needs a paragraph reminding you to bookmark the page before each chapter? And more!
+- **Description Cleaner**: Removes spam from the descriptions. "You are reading X, one of the most popular Y covering in..." nuh-uh.
