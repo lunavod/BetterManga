@@ -50,37 +50,18 @@ export class HomePage extends Module {
 
   initPreviews() {
     let loadedMangaId: string | null = null;
+    let visible = false;
+
     const card = this.createCardStructure();
     document.body.appendChild(card);
     let hideTimer: NodeJS.Timeout | null = null;
-    document.addEventListener("mousemove", (e) => {
-      const element = e.target as HTMLElement;
-      const url = getElementUrl(element);
+    let showTimer: NodeJS.Timeout | null = null;
+    let mangaLoaded = false;
+    let thresholdPassed = false;
+    let currentUrl: string | null = null;
+    let currentMouseEvent: MouseEvent | null = null; // Store current mouse position
 
-      if (
-        url &&
-        new URL(url).pathname.startsWith("/manga/") &&
-        !url.includes("/chapter-")
-      ) {
-        if (!loadedMangaId || loadedMangaId !== getMangaIdFromUrl(url)) {
-          getMangaFromUrl(url).then((manga: Manga) => {
-            this.updateCardContent(card, manga);
-          });
-
-          loadedMangaId = getMangaIdFromUrl(url);
-        }
-        card.style.display = "flex";
-        if (hideTimer) {
-          clearTimeout(hideTimer);
-          hideTimer = null;
-        }
-      } else {
-        if (!hideTimer)
-          hideTimer = setTimeout(() => {
-            card.style.display = "none";
-          }, 100);
-      }
-
+    const updateCardPosition = (e: MouseEvent) => {
       card.style.left = `${e.pageX + 10}px`;
       card.style.right = "auto";
 
@@ -90,6 +71,94 @@ export class HomePage extends Module {
       } else {
         card.style.top = "auto";
         card.style.bottom = `${window.innerHeight - e.pageY + 10}px`;
+      }
+    };
+
+    const tryShowCard = () => {
+      if (mangaLoaded && thresholdPassed && !visible && currentMouseEvent) {
+        card.style.display = "flex";
+        visible = true;
+        updateCardPosition(currentMouseEvent); // Position it at current mouse location
+      }
+    };
+
+    document.addEventListener("mousemove", (e) => {
+      currentMouseEvent = e; // Always store current mouse position
+
+      const element = e.target as HTMLElement;
+      const url = getElementUrl(element);
+
+      if (
+        url &&
+        new URL(url).pathname.startsWith("/manga/") &&
+        !url.includes("/chapter-")
+      ) {
+        // Clear hide timer if we're back on a manga link
+        if (hideTimer) {
+          clearTimeout(hideTimer);
+          hideTimer = null;
+        }
+
+        // Only start loading/timing if this is a new URL or we're not already processing
+        if (url !== currentUrl) {
+          // Reset states for new URL
+          mangaLoaded = false;
+          thresholdPassed = false;
+          currentUrl = url;
+
+          // Clear any existing show timer
+          if (showTimer) {
+            clearTimeout(showTimer);
+          }
+
+          // Start loading manga immediately
+          if (!loadedMangaId || loadedMangaId !== getMangaIdFromUrl(url)) {
+            getMangaFromUrl(url).then((manga: Manga) => {
+              // Only update if we're still on the same URL
+              if (currentUrl === url) {
+                this.updateCardContent(card, manga);
+                loadedMangaId = getMangaIdFromUrl(url);
+                mangaLoaded = true;
+                tryShowCard();
+              }
+            });
+          } else {
+            // Manga already loaded for this URL
+            mangaLoaded = true;
+          }
+
+          // Start threshold timer
+          showTimer = setTimeout(() => {
+            if (currentUrl === url) {
+              thresholdPassed = true;
+              tryShowCard();
+            }
+            showTimer = null;
+          }, 500); // 300ms threshold delay
+        }
+      } else {
+        // Clear show timer and reset states if we leave the manga link
+        if (showTimer) {
+          clearTimeout(showTimer);
+          showTimer = null;
+        }
+
+        mangaLoaded = false;
+        thresholdPassed = false;
+        currentUrl = null;
+
+        // Hide if currently visible
+        if (visible && !hideTimer) {
+          hideTimer = setTimeout(() => {
+            card.style.display = "none";
+            visible = false;
+          }, 100);
+        }
+      }
+
+      // Update position if card is visible
+      if (visible) {
+        updateCardPosition(e);
       }
     });
   }
