@@ -6,7 +6,32 @@ export class ChapterPage extends Module {
 
     init() {
         this.updateChapterNavigation();
+        this.registerShortcuts();
         console.log("Chapter Page module initialized");
+    }
+
+    registerShortcuts() {
+        document.addEventListener('keydown', (event: KeyboardEvent) => {
+            if (!event.ctrlKey || !['ArrowLeft', 'ArrowRight'].includes(event.key)) {
+                return;
+            }
+
+            event.preventDefault();
+            // Button classes are reversed in the original code
+            // so we need to swap them here
+            
+            if (event.key === 'ArrowLeft') {
+                const prevButton = document.querySelector(".btn-navigation-chap .next") as HTMLAnchorElement;
+                if (prevButton) {
+                    prevButton.click();
+                }
+            } else if (event.key === 'ArrowRight') {
+                const nextButton = document.querySelector(".btn-navigation-chap .back") as HTMLAnchorElement;
+                if (nextButton) {
+                    nextButton.click();
+                }
+            }
+        });
     }
 
     updateChapterNavigation() {
