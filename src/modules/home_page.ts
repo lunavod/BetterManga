@@ -1,5 +1,7 @@
 import { Module } from "../module";
-import { getMangaFromUrl, getMangaIdFromUrl, Manga } from "../utils/manga";
+import { getHistoryInfo, HistoryElement } from "../utils/database";
+import { eye } from "../utils/icons";
+import { getMangaFromUrl, getMangaIdFromUrl, Manga, sanitizeDescription } from "../utils/manga";
 
 function getElementUrl(element: HTMLElement) {
   const link = (
@@ -11,11 +13,97 @@ function getElementUrl(element: HTMLElement) {
 export class HomePage extends Module {
   name = "Home Page";
   urlMatch = [/^\/$/, /^\/manga\-list\/.*/];
+  inList = window.location.pathname.startsWith("/manga-list/");
 
   init() {
     this.initPreviews();
     this.filterNotifications();
+    this.updateHistoryInfo();
+    this.registerShortcuts();
+    this.sanitizeDescriptions();
     console.log("Home Page module initialized");
+  }
+
+  sanitizeDescriptions() {
+    if (!this.inList) return;
+
+    const descriptions = document.querySelectorAll('.list-truyen-item-wrap p');
+    descriptions.forEach((desc) => {
+      const title = desc.parentElement?.querySelector('h3') as HTMLHeadingElement;
+      console.log("TITLE", title, title.textContent!.trim());
+      console.log(desc.textContent)
+      desc.textContent = sanitizeDescription(desc.textContent?.replaceAll("  ", "").replaceAll("\n", " ") || "", title.textContent!.trim());
+    })
+  }
+
+  registerShortcuts() {
+    document.addEventListener("keydown", (event: KeyboardEvent) => {
+      if (!event.ctrlKey || !["ArrowLeft", "ArrowRight"].includes(event.key)) {
+        return;
+      }
+
+      event.preventDefault();
+      if (event.key === "ArrowLeft") {
+        if (!this.inList) return;
+
+        const currentPage = document.querySelector(".panel_page_number .page_select") as HTMLDivElement;
+        if (currentPage.previousElementSibling?.className.includes('page_blue')) return;
+
+        (currentPage.previousElementSibling as HTMLAnchorElement).click();
+      } else if (event.key === "ArrowRight") {
+        if (this.inList) {
+          const currentPage = document.querySelector(".panel_page_number .page_select") as HTMLDivElement;
+          (currentPage.nextElementSibling as HTMLAnchorElement).click();
+          return;
+        }
+
+        // Main page covers ~2.5 pages, so we navigate to page 3
+        location.href = "/manga-list/latest-manga?page=3"
+      }
+    });
+  }
+
+  updateHistoryInfo() {
+    const covers = document.querySelectorAll(".bookmark_check");
+    console.log(covers);
+    covers.forEach((cover) => {
+      const id = cover.getAttribute("data-id");
+      if (!id) return;
+      getHistoryInfo(id).then((history) => {
+        if (!history) return;
+
+        console.log("History found for cover", cover, history);
+        this.injectLastRead(cover as HTMLElement, history);
+      });
+    });
+  }
+
+  injectLastRead(cover: HTMLElement, history: HistoryElement) {
+    if (cover.classList.contains("last-read-injected")) return;
+    cover.classList.add("last-read-injected");
+
+    const icon = document.createElement("span");
+    icon.className = "viewed-icon";
+    icon.innerHTML = eye;
+
+    cover.appendChild(icon);
+
+    let lastChapter: HTMLAnchorElement;
+    if (cover.classList.contains("list-story-item")) {
+      // We are on the manga-list page
+      lastChapter = cover.parentElement!.querySelector(
+        "a.list-story-item-wrap-chapter"
+      ) as HTMLAnchorElement;
+    } else {
+      // We are on the home page
+      lastChapter = cover.parentElement!.querySelector(
+        "a.sts"
+      ) as HTMLAnchorElement;
+    }
+
+    if (lastChapter.title === history.chapter_name) {
+      cover.classList.add("done");
+    }
   }
 
   filterNotifications() {

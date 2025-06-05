@@ -8,9 +8,12 @@ An extension for [NatoManga](https://natomanga.com) that enhances the reading ex
 - **Manga Preview Popup**: Brings back the preview popup that was removed after the move.
 - **Less clutter**: Who needs a paragraph reminding you to bookmark the page before each chapter? And more!
 - **Description Cleaner**: Removes spam from the descriptions. "You are reading X, one of the most popular Y covering in..." nuh-uh.
+- **Viewed manga marks**: Adds a mark to the cover of the manga that you have already viewed. Red if you have unread chapters, green if you have read all chapters.
 - **Chapter Navigation Shortcuts**: Use the ctr+arrow keys to navigate through chapters.
+- **List Navigation Shortcuts**: Use the ctr+arrow keys to navigate through the manga list.
 
 ## Changelog
 
+- **1.2.0**: Added list navigation shortcuts, viewed manga marks, improved description sanitizing.
 - **1.1.0**: Added chapter navigation shortcuts (ctr+arrow keys).
 - **1.0.0**: Initial release

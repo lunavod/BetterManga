@@ -1,13 +1,64 @@
 import { db } from "./database";
 
-export function sanitizeDescription(description: string): string {
-    const regexp = /You are reading .+, one of the most popular .+ covering in .+ genres, written by.+a top manga site to offering for free\. .+ has \d* translated chapters and translations of other chapters are in progress. Lets enjoy. If you want to get the updates about latest chapters, lets create an account and add .+ to your bookmark. (.+)/;
-    const match = description.match(regexp);
-    if (match && match[1]) {
-        description = match[1];
-    } else {
-        console.log("No match found in the description. Returning original description.");
-        console.log("Original description:", description);
+const symbolReplacements = {
+    '’': "'"
+}
+
+type Sanitizer = (description: string, title: string) => [string, boolean];
+const sanitizers: Sanitizer[] = [
+    
+    (description: string): [string, boolean] => {
+        const regexp = /You are reading .+, one of the most popular .+ covering in .+ genres, written by.+a top manga site to offering for free\. .+ has \d* translated chapters and translations of other chapters are in progress. Lets enjoy. If you want to get the updates about latest chapters, lets create an account and add .+ to your bookmark. (.+)/;
+        const match = description.match(regexp);
+        if (match && match[1]) {
+            return [match[1], true];
+        }
+        return [description, false];
+    },
+    (description: string, title: string): [string, boolean] => {
+        Object.entries(symbolReplacements).forEach(([symbol, replacement]) => {
+            title = title.replaceAll(symbol, replacement);
+        })
+        const placeholder = "Read manhwa " + title + " /";
+        console.log("[sanitizer] Sanitizing description with placeholder:", placeholder, description, description.startsWith(placeholder));
+        if (description.toLocaleLowerCase().startsWith(placeholder.toLocaleLowerCase()))
+            return [description.slice(placeholder.length), true];
+
+        return [description, false];
+    },
+    (description) => {
+        let changed = false;
+        Object.entries(symbolReplacements).forEach(([symbol, replacement]) => {
+            if (!description.includes(symbol)) {
+                console.log("[sanitizer] Symbol not found, skipping:", symbol);
+                return;
+            }
+
+            description = description.replaceAll(symbol, replacement);
+            changed = true;
+        })
+        return [description, changed];
+    },
+]
+
+export function sanitizeDescription(description: string, title: string): string {
+
+    for (let i = 0; i < 10; i++) {
+        // Limit the number of iterations to prevent infinite loops
+        console.warn("[sanitizer] Iteration:", i)
+        let changed = false;
+        for (const sanitizer of sanitizers) {
+            const [newDescription, wasChanged] = sanitizer(description, title);
+            if (wasChanged) {
+                console.log("[sanitizer] Description changed:", description, "->", newDescription);
+                description = newDescription.trim();
+                changed = true;
+                break; // Restart the loop to apply all sanitizers again
+            }
+        }
+        if (!changed) {
+            break; // No more changes, exit the loop
+        }
     }
 
     return description.trim();
@@ -80,7 +131,7 @@ export async function fetchManga(url: string): Promise<Manga> {
         throw new Error("Description element not found on the manga page.");
     }
     const textNode = descriptionElement.lastChild;
-    const description = sanitizeDescription(textNode!.textContent?.replaceAll("  ", "").replaceAll("\n", " ") ?? "");
+    const description = sanitizeDescription(textNode!.textContent?.replaceAll("  ", "").replaceAll("\n", " ") ?? "", title);
 
     return {
         cover,

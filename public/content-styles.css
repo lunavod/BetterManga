@@ -145,3 +145,37 @@ body.dark .manga-card {
 .notification-header.important {
     display: block !important;
 }
+
+.viewed p {
+    line-clamp: 4 !important;
+    -webkit-line-clamp: 4 !important;
+}
+
+.last-read-container {
+    font-size: 16px;
+    margin-bottom: 2px;
+    color: #424242;
+}
+
+.last-read-container a {
+    color: #059e9a;
+}
+
+
+.viewed-icon {
+    position: absolute;
+    width: 24px;
+    height: 24px;
+    background: #ff5b18;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 12px;
+    left: 12px;
+    border: 2px solid white;
+}
+
+.done .viewed-icon {
+    background: #059e9a;
+}
