@@ -6,7 +6,6 @@ const symbolReplacements = {
 
 type Sanitizer = (description: string, title: string) => [string, boolean];
 const sanitizers: Sanitizer[] = [
-    
     (description: string): [string, boolean] => {
         const regexp = /You are reading .+, one of the most popular .+ covering in .+ genres, written by.+a top manga site to offering for free\. .+ has \d* translated chapters and translations of other chapters are in progress. Lets enjoy. If you want to get the updates about latest chapters, lets create an account and add .+ to your bookmark. (.+)/;
         const match = description.match(regexp);
@@ -15,15 +14,20 @@ const sanitizers: Sanitizer[] = [
         }
         return [description, false];
     },
+    (description: string): [string, boolean] => {
+        const regexp = /.+? summary is updating\. Come visit mangabuddy\.com sometime to read the latest chapter of .+?\. If you have any question about this manga, Please don't hesitate to contact us or translate team\. Hope you enjoy it\.(.*)/;
+        const match = description.match(regexp);
+        if (match) {
+            return [match[1] ?? '', true];
+        }
+        return [description, false];
+    },
     (description: string, title: string): [string, boolean] => {
-        Object.entries(symbolReplacements).forEach(([symbol, replacement]) => {
-            title = title.replaceAll(symbol, replacement);
-        })
-        const placeholder = "Read manhwa " + title + " /";
-        console.log("[sanitizer] Sanitizing description with placeholder:", placeholder, description, description.startsWith(placeholder));
-        if (description.toLocaleLowerCase().startsWith(placeholder.toLocaleLowerCase()))
-            return [description.slice(placeholder.length), true];
-
+        const regexp = /Read .+ \/ (.*)/;
+        const match = description.match(regexp);
+        if (match) {
+            return [match[1] ?? '', true];
+        }
         return [description, false];
     },
     (description) => {

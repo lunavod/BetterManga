@@ -14,6 +14,7 @@ An extension for [NatoManga](https://natomanga.com) that enhances the reading ex
 
 ## Changelog
 
+- **1.2.1**: Improved description sanitizing.
 - **1.2.0**: Added list navigation shortcuts, viewed manga marks, improved description sanitizing.
 - **1.1.0**: Added chapter navigation shortcuts (ctr+arrow keys).
 - **1.0.0**: Initial release
